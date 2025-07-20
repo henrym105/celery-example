@@ -1,0 +1,4 @@
+curl -X POST "http://localhost:8000/add/?x=10&y=32"
+
+
+curl "http://localhost:8000/result/305e24ff-08ac-4fd7-9f71-25ed5a50701e"
