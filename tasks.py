@@ -7,6 +7,13 @@ celery_app = Celery(
     backend="redis://redis:6379/0"
 )
 
+# Set a default result expiration time (seconds)
+TTL = 5*60 
+celery_app.conf.update(
+    result_expires=TTL,
+    worker_concurrency=1,
+)
+
 @celery_app.task
 def add_task(x, y):
     for i in range(x):

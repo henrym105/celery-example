@@ -17,7 +17,7 @@ services:
   worker:
     build: .
     container_name: celery_worker
-    command: celery -A tasks worker --loglevel=info
+    command: celery -A tasks worker --loglevel=info --concurrency=1
     depends_on:
       - redis
     restart: unless-stopped
