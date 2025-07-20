@@ -95,3 +95,8 @@ def download_processed_video(task_id: str):
         filename=f"processed_{file_info.get('original_filename', 'video.mp4')}",
         media_type='video/mp4'
     )
+
+
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the Video Processing API. Use /upload-and-process/ to upload a video."}

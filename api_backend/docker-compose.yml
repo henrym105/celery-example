@@ -41,3 +41,14 @@ services:
       - redis
     environment:
       - REDIS_HOSTS=local:redis:6379
+
+  frontend:
+    build: ../api_frontend
+    container_name: react_frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    restart: unless-stopped
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000

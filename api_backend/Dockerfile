@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
+RUN pip install -r requirements.txt
+
 COPY . .
 COPY ./src/ ./src/
-
-RUN pip install -r requirements.txt
