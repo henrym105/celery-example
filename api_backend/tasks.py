@@ -4,6 +4,7 @@ from time import sleep
 import uuid
 
 from celery import Celery
+from fastapi import UploadFile
 
 from src.inference import flip_rgb_to_bgr
 
@@ -42,8 +43,16 @@ def process_video_task(self, input_file_path: str):
         output_filename = f"processed_{uuid.uuid4()}.mp4"
         output_path = Path("/app/output") / output_filename
 
-        flip_rgb_to_bgr(input_file_path, output_path)
+        # Ensure output directory exists
+        output_path.parent.mkdir(parents=True, exist_ok=True)
 
+        # Update progress
+        self.update_state(state='PROGRESS', meta={'progress': 50})
+
+        flip_rgb_to_bgr(input_file_path, str(output_path))
+
+        # Update progress
+        self.update_state(state='PROGRESS', meta={'progress': 100})
 
         return {
             "input_path": input_file_path,
@@ -54,8 +63,37 @@ def process_video_task(self, input_file_path: str):
         }
 
     except Exception as e:
-        self.update_state(state='FAILURE', meta={'error': str(e)})
+        raise e
+
+@celery_app.task(bind=True)
+def upload_video_task(self, input_file_path: str):
+    """Upload video file task"""
+    try:
+        # Simulate upload delay
+        sleep(2)
+        
+        # Update progress
+        self.update_state(state='PROGRESS', meta={'progress': 100})
+
         return {
-            "status": "failed",
-            "error": str(e)
+            "input_path": input_file_path,
+            "status": "uploaded"
         }
+
+    except Exception as e:
+        raise e
+
+
+
+def save_uploaded_file(file: UploadFile, file_id: str) -> str:
+    """Save uploaded file to temporary directory"""
+    file_ext = Path(file.filename).suffix.lower()
+    temp_filename = f"{file_id}{file_ext}"
+    temp_filepath = UPLOAD_DIR / temp_filename
+    
+    # Save file
+    with open(temp_filepath, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    
+    logger.info(f"Saved uploaded file: {temp_filepath}")
+    return str(temp_filepath)

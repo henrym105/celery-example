@@ -14,14 +14,18 @@ services:
     depends_on:
       - redis
     restart: unless-stopped
+    volumes:
+      - ./:/app
 
   worker:
     build: .
     container_name: celery_worker
     command: celery -A tasks worker --loglevel=info --concurrency=1
     depends_on:
-      - redis
+      - api
     restart: unless-stopped
+    volumes:
+      - ./:/app
 
   flower:
     build: .
@@ -51,4 +55,4 @@ services:
       - api
     restart: unless-stopped
     environment:
-      - REACT_APP_API_URL=http://localhost:8000
+      - REACT_APP_API_URL=http://api:8000
