@@ -1,11 +1,13 @@
+import os
+from pathlib import Path
+import uuid
+
+import aiofiles
+from celery.result import AsyncResult
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
-from celery.result import AsyncResult
-from pathlib import Path
-import uuid
-import os
-import aiofiles
+
 from tasks import process_video_task, celery_app
 
 app = FastAPI()

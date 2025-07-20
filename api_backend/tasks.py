@@ -5,7 +5,7 @@ import uuid
 
 from celery import Celery
 
-from inference import flip_rgb_to_bgr
+from src.inference import flip_rgb_to_bgr
 
 
 # ----------------------------------------------------
