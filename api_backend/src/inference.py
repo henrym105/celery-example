@@ -7,8 +7,6 @@ logger = get_task_logger(__name__)
 
 def flip_rgb_to_bgr(input_path: str, output_path: str):
     """Flip RGB/BGR colors for video files"""
-    logger.info(f"----> Processing video: {input_path} to {output_path}")
-    
     if not os.path.exists(input_path):
         logger.error(f"Input file does not exist: {input_path}")
         raise FileNotFoundError(f"Input file does not exist: {input_path}")

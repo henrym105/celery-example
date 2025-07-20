@@ -65,35 +65,3 @@ def process_video_task(self, input_file_path: str):
     except Exception as e:
         raise e
 
-@celery_app.task(bind=True)
-def upload_video_task(self, input_file_path: str):
-    """Upload video file task"""
-    try:
-        # Simulate upload delay
-        sleep(2)
-        
-        # Update progress
-        self.update_state(state='PROGRESS', meta={'progress': 100})
-
-        return {
-            "input_path": input_file_path,
-            "status": "uploaded"
-        }
-
-    except Exception as e:
-        raise e
-
-
-
-def save_uploaded_file(file: UploadFile, file_id: str) -> str:
-    """Save uploaded file to temporary directory"""
-    file_ext = Path(file.filename).suffix.lower()
-    temp_filename = f"{file_id}{file_ext}"
-    temp_filepath = UPLOAD_DIR / temp_filename
-    
-    # Save file
-    with open(temp_filepath, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-    
-    logger.info(f"Saved uploaded file: {temp_filepath}")
-    return str(temp_filepath)
